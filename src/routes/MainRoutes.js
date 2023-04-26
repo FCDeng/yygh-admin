@@ -21,7 +21,7 @@ const MainRoutes = {
                 { path: '/hospital/list', element: <HospitalPage /> },
                 { path: '/hospital/set', element: <HospitalSetPage /> },
                 { path: '/hospital/setAdd', element: <HospitalSetAddPage /> },
-                { path: '/hospital/detail', element: <HospitalDetailPage /> },
+                { path: '/hospital/detail/:id', element: <HospitalDetailPage /> },
                 { path: '/hospital/schedule', element: <SchedulePage /> },
             ]
         },

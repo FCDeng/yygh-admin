@@ -3,16 +3,17 @@ import AlignVerticalBottomIcon from '@mui/icons-material/AlignVerticalBottom';
 import { useState, useEffect } from 'react';
 import cookie from 'js-cookie'
 import { TableGrid } from '@/components';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import userInfoApi from '@/api/user/userInfo'
 const UserDetail = () => {
-    const { id } = useParams()
+    const [search, setSearch] = useSearchParams()
     const [userInfo, setUserInfo] = useState({})
     const [patientList, setPatientList] = useState([])
     const navigate = useNavigate()
     useEffect(() => {
         getData()
     })
+    const id = search.get('id') 
     const getData = () => {
         userInfoApi.show(id).then(response => {
             setUserInfo(response.data.userInfo)
@@ -22,13 +23,13 @@ const UserDetail = () => {
 
     const columns = [
         { field: 'name', headerName: '姓名', width: 80 },
-        { field: 'phone', headerName: '手机号', width: 80 },
-        { field: 'certificatesNo', headerName: '证件编号', width: 80 },
+        { field: 'phone', headerName: '手机号', width: 120 },
+        { field: 'certificatesNo', headerName: '证件编号', width: 180 },
         { field: 'sex', headerName: '性别', width: 80, renderCell: (row) => (<Typography>{row?.sex == 1 ? '男' : '女'}</Typography>) },
         { field: 'isMarry', headerName: '是否结婚', width: 80, renderCell: (row) => (<Typography>{row?.isMarry ? '是' : '否'}</Typography>) },
         { field: 'birthdate', headerName: '出生年月', width: 100 },
-        { field: 'address', headerName: '地址', width: 130 },
-        { field: 'createTime', headerName: '创建时间', width: 80 },
+        { field: 'address', headerName: '地址', width:250 },
+        { field: 'createTime', headerName: '创建时间', width: 180 },
     ]
     return <Stack spacing={0.5}>
         <Stack direction={'row'} sx={{ display: 'flex', justifyContent: 'space-between' }}>

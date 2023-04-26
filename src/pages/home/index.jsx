@@ -12,11 +12,11 @@ function HomePage() {
     <Stack spacing={2} sx={{ bgcolor: 'white', width: '100%', height: '100%', p:2, borderRadius:2 }}>
       <Stack direction={'row'}>
         <Typography>系统：</Typography>
-        <Typography>香港玛丽医院预约挂号系统</Typography>
+        <Typography>香港玛丽医院业务系统</Typography>
       </Stack>
       <Stack direction={'row'}>
         <Typography>作者：</Typography>
-        <Typography>邓奋聪</Typography>
+        <Typography>邓奋聪190801050102</Typography>
       </Stack>
     </Stack>
   )

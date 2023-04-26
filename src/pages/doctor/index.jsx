@@ -11,7 +11,7 @@ const DoctorPage = ({ hoscode }) => {
 
     useEffect(() => {
         getData()
-    })
+    },[])
     const [hospName, setHospName] = useState('香港玛丽医院')
     const [hosList, setHosList] = useState([])
     const getData = () => {

@@ -4,7 +4,8 @@ export default {
   // 医院列表
   getPageList(current, limit, searchObj) {
     return request({
-      url: `/admin/hosp/hospital/findPageHospital/${current}/${limit}`,
+      url: `/admin/hosp/hospital/list/${current}/${limit}`,
+      // url: `/admin/hosp/hospital/findPageHospital/${current}/${limit}`,
       method: 'get',
       params: searchObj
     })

@@ -5,105 +5,93 @@ import classes from './Schedule.scss'
 import cookie from 'js-cookie'
 import { TreeList, message } from '@/components'
 import LabelIcon from '@mui/icons-material/Label';
-import { useNavigate, useParams } from 'react-router-dom'
-import hospitalApi from '../../api/hosp/hosp'
-import userInfoApi from '../../api/user/userInfo'
-const Schedule = ({ hoscode }) => {
+import { useNavigate, useSearchParams, } from 'react-router-dom'
+import { TableGrid } from '@/components';
+import hospApi from '@/api/hosp/hosp'
+const Schedule = () => {
     const [hospital, setHospital] = useState({ param: {} })
-    const [depcode, setDepcode] = useState(null)
     const [scheduleId, setScheduleId] = useState(null)
+    const [search, setSearch] = useSearchParams()
     const [bookingRule, setBookingRule] = useState({})
     const [departmentVoList, setDepartmentVoList] = useState([])
     const [workDate, setWorkDate] = useState(null)
-    const [scheduleList, setScheduleList] = useState([
-        { title: '医师', docname: '张三', amount: 50, availableNumber: 10 }
-    ])
+    const [scheduleList, setScheduleList] = useState([])
     const [tabShow, setTabShow] = useState(true)
     const [activeIndex, setActiveIndex] = useState(0)
     const [timeString, setTimeString] = useState(null)
     const [depname, setDepname] = useState(null)
     const timerRef = useRef(null)
     const [time, setTime] = useState('今天')
-    const [pageFirstStatus, setPageFirstStatus] = useState(0)
+   const navigate = useNavigate()
     const [bookingScheduleList, setBookingScheduleList] = useState([])
     const [baseMap, setBaseMap] = useState({})
     const [data, setData] = useState([])
-    const navigate = useNavigate()
-    // 获取可预约排班分页数据
-    const getBookingScheduleRule = (workTime) => {
-        hospitalApi.getBookingScheduleRule(1, 7, hoscode, depcode).then(response => {
-            setBookingScheduleList(response.data.bookingScheduleList)
+    const [departmentCode, setDepartmentCode] = useState(null);
+    const hoscode = search.get('hoscode')
+    useEffect(() => {
+        setWorkDate(getCurDate())
+        fetchData()
+    }, []);
+
+    // 查询医院所有科室列表
+    const fetchData = () => {
+        hospApi.getDeptByHoscode(hoscode).then(response => {
+            setData(response.data)
+            // 默认选中第一个
+            let resDepartmentCode = response.data[0].children[0].depcode
+            setDepartmentCode(response.data.length ? resDepartmentCode : departmentCode)
+            setDepname(response.data.length ? response.data[0].children[0].depname : depname)
+            getPage(resDepartmentCode)
+        })
+    }
+    const getPage = (resDepartmentCode) => {
+        setWorkDate(null)
+        setActiveIndex(0)
+        getScheduleRule(resDepartmentCode)
+    }
+    // 查询排班规则数据
+    const getScheduleRule = (resDepartmentCode) => {
+        hospApi.getScheduleRule(1, 10, hoscode, departmentCode || resDepartmentCode).then(response => {
+            setBookingScheduleList(response.data.bookingScheduleRuleList)
+            setScheduleList(response.data.scheduleList || [])
             setBaseMap(response.data.baseMap)
 
-            // 分页后workDate=null，默认选中第一个
-            if (workDate == null) {
-                setWorkDate(response.data.bookingScheduleList[0].workDate)
-            }
-            //判断当天是否停止预约 status == -1 停止预约
-            if (workDate == getCurDate()) {
-                setPageFirstStatus(response.data.bookingScheduleList[0].status)
-            } else {
-                setPageFirstStatus(0)
-            }
-            findScheduleList(workTime || response.data.bookingScheduleList[0].workDate)
+            // 分页后workDate=null，默认选中第一个 
+            setWorkDate(workDate || response.data.bookingScheduleRuleList[0].workDate)
+            //调用查询排班详情
+            getDetailSchedule(resDepartmentCode)
         })
     }
-    // 获取排班信息
-    const findScheduleList = (workDate) => {
-        hospitalApi.findScheduleList(hoscode, depcode, workDate || getCurDate()).then(response => {
-            setScheduleList(response.data)
-        })
+    console.log(workDate, 1111);
+    //查询排班详情
+    const getDetailSchedule = (resDepartmentCode) => {
+        // console.log(resDepartmentCode, departmentCode, workDate);
+        hospApi.getScheduleDetail(hoscode, departmentCode || resDepartmentCode, workDate || getCurDate())
+            .then(response => {
+                setScheduleList(response.data)
+            })
     }
-    // 即将放号的倒计时
-    const countDown = (releaseTime, nowTime) => {
-        //计算倒计时时长
-        let secondes = 0;
-        if (releaseTime > nowTime) {
-            setTime('今天')
-            //当前时间到放号时间的时长
-            secondes = Math.floor((releaseTime - nowTime) / 1000);
-        } else {
-            setTime('明天')
-            //计算明天放号时间
-            let releaseDate = new Date(releaseTime)
-            releaseTime = new Date(releaseDate.setDate(releaseDate.getDate() + 1)).getTime()
-            //当前时间到明天放号时间的时长
-            secondes = Math.floor((releaseTime - nowTime) / 1000);
-        }
 
-        //定时任务
-        timerRef.current = setInterval(() => {
-            secondes = secondes - 1
-            if (secondes <= 0) {
-                clearInterval(timerRef);
-            }
-            setTimeString(convertTimeString(secondes))
-        }, 1000);
+    const handleNodeClick = (data) => {
+        // 科室大类直接返回
+        if (data.children != null) return
+        setDepartmentCode(data.depcode)
+        setDepname(data.depname)
+        getPage()
     }
-    const convertTimeString = (allseconds) => {
-        if (allseconds <= 0) return '00:00:00'
-        // 计算天数
-        let days = Math.floor(allseconds / (60 * 60 * 24));
-        // 小时
-        let hours = Math.floor((allseconds - (days * 60 * 60 * 24)) / (60 * 60));
-        // 分钟
-        let minutes = Math.floor((allseconds - (days * 60 * 60 * 24) - (hours * 60 * 60)) / 60);
-        // 秒
-        let seconds = allseconds - (days * 60 * 60 * 24) - (hours * 60 * 60) - (minutes * 60);
 
-        //拼接时间
-        let timString = "";
-        if (days > 0) {
-            timString = days + "天:";
-        }
-        return timString += hours + " 时 " + minutes + " 分 " + seconds + " 秒 ";
+    const selectDate = (workDate, index) => {
+        setWorkDate(workDate.workDate)
+        setActiveIndex(index)
+        //调用查询排班详情
+        getDetailSchedule()
     }
 
     const getCurDate = () => {
-        let datetime = new Date()
-        let year = datetime.getFullYear()
-        let month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1
-        let date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate()
+        var datetime = new Date()
+        var year = datetime.getFullYear()
+        var month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1
+        var date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate()
         return year + '-' + month + '-' + date
     }
     const isHasNumber = (status, availableNumber,) => {
@@ -116,24 +104,6 @@ const Schedule = ({ hoscode }) => {
             title = '停止挂号'
         }
         return title
-    }
-    const selectDate = (item, index) => {
-        setWorkDate(item.workDate)
-        setActiveIndex(index)
-        //清理定时
-        if (timerRef != null) clearInterval(timerRef)
-        // 是否即将放号
-        if (item.status == 1) {
-            setTabShow(false)
-            // 放号时间
-            let releaseTime = new Date(getCurDate() + ' ' + baseMap.releaseTime).getTime()
-            let nowTime = new Date().getTime();
-            countDown(releaseTime, nowTime)
-            // dealClass();
-        } else {
-            setTabShow(true)
-            getBookingScheduleRule(item.workDate)
-        }
     }
     const hasNum = (status, availableNumber, index) => {
         let classType = ''
@@ -150,46 +120,53 @@ const Schedule = ({ hoscode }) => {
         }
         return `${classes.book} ${classType}`
     }
+    const treeHandle = (item) => {
+        if (item.children != null) return
+        setDepartmentCode(item.depcode)
+        setDepname(item.depname)
+        getPage()
+    }
+
+    const columns = [
+        { field: 'title', headerName: '职称', width: 130, renderCell: ({ row }) => (<Typography>{`${row.title} | ${row.docname}`}</Typography>) },
+        { field: 'reservedNumber', headerName: '可预约数', width: 130 },
+        { field: 'availableNumber', headerName: '剩余预约数', width: 130 },
+        { field: 'amount', headerName: '挂号费(元)', width: 130 },
+        { field: 'skill', headerName: '擅长技能', width: 130 }
+    ]
+    console.log(activeIndex);
+
     return <Box className={classes.schedule}>
+        <Stack direction={'row'} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography sx={{ fontWeight: 'bold' }}>排班页面</Typography>
+            <Button variant="contained" onClick={() => navigate(-1)} sx={{ width: 60 }}>返回</Button>
+
+        </Stack>
         <Stack direction={'row'}>
-            <Box sx={{ width: 150 }}>
-                <TreeList data={data} />
+            <Box sx={{ width: 200, height: 500, border: 1, mr: 2 }}>
+                <TreeList data={data} treeHandle={treeHandle} />
             </Box>
-            <Stack sx={{ display: 'flex', flex: 1 }}>
-                <Typography>{`选择：${baseMap.hosname}/${depname}/${workDate} `}</Typography>
+            <Stack sx={{ display: 'flex', flex: 1 }} spacing={2}>
+                <Typography sx={{ mb: 1 }} >{`选择：${baseMap.hosname}/${depname}/${workDate} `}</Typography>
                 <Stack direction={'row'} spacing={2}>
                     {bookingScheduleList.map((item, index) => (
-                        <Stack key={item.workDate} spacing={1} sx={{ borderRadius: 1, border: '1px solid #999' }}
-                            className={hasNum(item.status, item.availableNumber, index)}
+                        <Stack key={item.workDate} spacing={1}
+                            sx={{
+                                borderRadius: 1, border: '1px solid #d9ecff', bgcolor: index == activeIndex ? '#ecf5ff' : '',
+                                p: 1
+                            }}
+                            className={`${index == activeIndex ? classes.active : ''}`}
                             onClick={() => selectDate(item, index)}>
                             <Stack direction={'row'} spacing={1} sx={{ px: 1, py: 1 }} className={classes.bookTop}>
-                                <Typography sx={{ fontSize: 10 }} >{item.workDate}</Typography>
-                                <Typography sx={{ fontSize: 10 }}>{item.dayOfWeek}</Typography>
+                                <Typography sx={{ fontSize: 10, color: index == activeIndex ? '#409EFF' : '' }} >{item.workDate}</Typography>
+                                <Typography sx={{ fontSize: 10, color: index == activeIndex ? '#409EFF' : '' }}>{item.dayOfWeek}</Typography>
                             </Stack>
-                            <Typography sx={{ textAlign: 'center', pb: 2, fontSize: 10 }}>{isHasNumber(item.status, item.availableNumber)}</Typography>
+                            <Typography sx={{ textAlign: 'center', pb: 2, fontSize: 10, color: index == activeIndex ? '#409EFF' : '' }}>{item.availableNumber} / {item.reservedNumber}</Typography>
                         </Stack>
                     ))}
 
                 </Stack>
-                {tabShow ? <Stack>
-                    <Typography sx={{ py: 4 }}>号源</Typography>
-                    <Stack >
-                        {scheduleList.map((item, index) => (<Stack key={`${item.id}${index}scheduleList`}
-                            direction={'row'} sx={{ display: 'flex', flex: 1, justifyContent: 'space-between', borderBottom: 1, pb: 2 }}>
-                            <Stack direction={'row'} spacing={1}>
-                                <Typography sx={{ mt: 1.6 }} >{`${item.title} | ${item.docname}`}</Typography>
-                            </Stack>
-                            <Stack direction={'row'} spacing={2} sx={{ pr: 4 }} >
-                                <Typography sx={{ color: '#3375C1', mt: 1 }}>{`￥${item.amount}`}</Typography>
-                                <Button
-                                    className={classes.btn}
-                                    sx={item.availableNumber == 0 || pageFirstStatus == -1 ? { background: '#7f828b', px: 4 } : { bgcolor: '#3375C1', color: 'white', px: 4 }}
-                                >{`剩余${item.availableNumber}`}</Button>
-                            </Stack>
-                        </Stack>
-                        ))}
-                    </Stack>
-                </Stack> : null}
+                <TableGrid rows={scheduleList} columns={columns} />
             </Stack>
         </Stack>
     </Box>

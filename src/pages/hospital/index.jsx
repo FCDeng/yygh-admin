@@ -51,10 +51,10 @@ const Hospital = () => {
         getData()
     }
     const goDetail = (id) => {
-        navigate('/hospital/detail', { state: { id } })
+        navigate(`/hospital/detail?id=${id}`)
     }
-    const goSchedule = (id) => {
-        navigate('/hospital/schedule', { state: { id } })
+    const goSchedule = (hoscode) => {
+        navigate(`/hospital/schedule?hoscode=${hoscode}`)
     }
     const setStatus = (id, status) => {
         hospApi.updateStatus(id, status)
@@ -78,7 +78,7 @@ const Hospital = () => {
             renderCell: ({ row }) => {
                 return <Stack direction={'row'} spacing={0.4}>
                     <Button onClick={() => goDetail(row.id)} variant="contained" size="small">详情</Button>
-                    <Button onClick={() => goSchedule(row.id)} variant="contained" size="small">排班</Button>
+                    <Button onClick={() => goSchedule(row.hoscode)} variant="contained" size="small">排班</Button>
                     <Button variant="contained" onClick={() => setStatus(row.id, row.status ? 0 : 1)}>{row.status === 0 ? '上线' : '下线'}</Button>
                 </Stack>
             }

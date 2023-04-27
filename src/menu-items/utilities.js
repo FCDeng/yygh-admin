@@ -32,23 +32,23 @@ const utilities = {
             type: 'collapse',
             breadcrumbs: false,
             children: [
-                {
-                    id: 'hospital-set',
-                    title: '医院设置',
-                    type: 'item',
-                    url: '/hospital/set',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'hospital-set-add',
-                    title: '医院设置添加',
-                    type: 'item',
-                    url: '/hospital/setAdd',
-                    breadcrumbs: false
-                },
+                // {
+                //     id: 'hospital-set',
+                //     title: '医院设置',
+                //     type: 'item',
+                //     url: '/hospital/set',
+                //     breadcrumbs: false
+                // },
+                // {
+                //     id: 'hospital-set-add',
+                //     title: '医院设置添加',
+                //     type: 'item',
+                //     url: '/hospital/setAdd',
+                //     breadcrumbs: false
+                // },
                 {
                     id: 'hospital-man',
-                    title: '医院管理',
+                    title: '医院列表',
                     type: 'item',
                     url: '/hospital/list',
                     breadcrumbs: false

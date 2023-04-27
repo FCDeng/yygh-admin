@@ -3,20 +3,21 @@ import AlignVerticalBottomIcon from '@mui/icons-material/AlignVerticalBottom';
 import { useState, useEffect } from 'react';
 import cookie from 'js-cookie'
 import { TableGrid } from '@/components';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import orderInfoApi from '@/api/order/orderInfo'
 const OrderDetail = () => {
+    const [search, setSearch] = useSearchParams()
     const { id } = useParams()
     const [orderInfo, setOrderInfo] = useState({})
-    const [patientList, setPatientList] = useState([])
+    const [patient, setPatient] = useState({})
     const navigate = useNavigate()
     useEffect(() => {
         getData()
-    })
+    }, [])
     const getData = () => {
-        orderInfoApi.getDetailById(id).then(response => {
+        orderInfoApi.getDetailById(search.get('id')).then(response => {
             setOrderInfo(response.data.orderInfo)
-            setPatientList(response.data.patient)
+            setPatient(response.data.patient)
         })
     }
 
@@ -31,7 +32,7 @@ const OrderDetail = () => {
         { field: 'contactsCertificatesNo', headerName: '联系人证件号', width: 130 },
         { field: 'contactsPhone', headerName: '联系人手机', width: 80 },
         { field: 'createTime', headerName: '创建时间', width: 80 },
-    ]
+    ] 
     return <Stack spacing={0.5}>
         <Stack direction={'row'} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography sx={{ fontWeight: 'bold' }}>订单详情</Typography>
@@ -74,8 +75,8 @@ const OrderDetail = () => {
             </Grid>
             <Grid item xs={4}>
                 <Stack direction={'row'} spacing={1}>
-                    <Typography>预约号序:</Typography>
-                    <Typography>{orderInfo.number}</Typography>
+                    <Typography>预约时间:</Typography>
+                    <Typography>{orderInfo.createTime}</Typography>
                 </Stack>
             </Grid>
         </Grid>
@@ -91,16 +92,57 @@ const OrderDetail = () => {
                     <Typography>订单状态:</Typography>
                     <Typography>{orderInfo?.param?.orderStatusString}</Typography>
                 </Stack>
+            </Grid> 
+        </Grid>
+        <Typography sx={{ fontWeight: 'bold', py: 2 }}>患者信息</Typography> 
+        <Grid container sx={{ py: 0.5 }}>
+            <Grid item xs={4}>
+                <Stack direction={'row'} spacing={1}>
+                    <Typography>姓名:</Typography>
+                    <Typography>{patient.name}</Typography>
+                </Stack>
             </Grid>
             <Grid item xs={4}>
                 <Stack direction={'row'} spacing={1}>
-                    <Typography>预约时间:</Typography>
-                    <Typography>{orderInfo.createTime}</Typography>
+                    <Typography>证件类型:</Typography>
+                    <Typography>{patient.certificatesNo}</Typography>
+                </Stack>
+            </Grid>
+            <Grid item xs={4}>
+                <Stack direction={'row'} spacing={1}>
+                    <Typography>性别:</Typography>
+                    <Typography>{ patient.sex === 1 ? '男' : '女'}</Typography>
                 </Stack>
             </Grid>
         </Grid>
-        <Typography sx={{ fontWeight: 'bold', py: 0.3 }}>就诊人信息</Typography>
-        <TableGrid rows={patientList} columns={columns} />
+        <Grid container sx={{ py: 1 }}>
+            <Grid item xs={4}>
+                <Stack direction={'row'} spacing={1}>
+                    <Typography>出生年月:</Typography>
+                    <Typography>{patient.birthdate}</Typography>
+                </Stack>
+            </Grid>
+            <Grid item xs={4}>
+                <Stack direction={'row'} spacing={1}>
+                    <Typography>手机:</Typography>
+                    <Typography>{patient.phone}</Typography>
+                </Stack>
+            </Grid>
+            <Grid item xs={4}>
+                <Stack direction={'row'} spacing={1}>
+                    <Typography>是否结婚:</Typography>
+                    <Typography>{patient.isMarry === 1 ? '是' : '否'}</Typography>
+                </Stack>
+            </Grid>
+        </Grid>
+        <Grid container sx={{ py: 1 }}>
+            <Grid item xs={4}>
+                <Stack direction={'row'} spacing={1}>
+                    <Typography>地址:</Typography>
+                    <Typography>{patient?.param?.fullAddress}</Typography>
+                </Stack>
+            </Grid> 
+        </Grid>
     </Stack>
 }
 export default OrderDetail

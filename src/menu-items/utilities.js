@@ -70,6 +70,13 @@ const utilities = {
                     type: 'item',
                     url: 'user/list',
                     breadcrumbs: false
+                },
+                {
+                    id: 'user-auth',
+                    title: '用户认证',
+                    type: 'item',
+                    url: 'user/userAuth',
+                    breadcrumbs: false
                 }
             ]
         },

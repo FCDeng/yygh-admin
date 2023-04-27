@@ -41,8 +41,8 @@ const UserPage = () => {
         // }
         getData()
     }, []);
-    const getData = () => {
-        userInfoApi.getPageList(1, 40, { keyword }).then(
+    const getData = (data) => {
+        userInfoApi.getPageList(1, 40, { keyword: data?.keyword || '' }).then(
             response => {
                 setList(response.data.records)
             }
@@ -51,6 +51,7 @@ const UserPage = () => {
     const resetHandle = () => {
         // setCreateTimeBegin([dayjs(), dayjs()])
         reset()
+        getData()
     }
     const goDetail = (id) => {
         navigate(`/user/detail?id=${id}`)
@@ -77,17 +78,16 @@ const UserPage = () => {
     // sx={{ bgcolor: 'white', width: '100%', height: '100%', p: 2, borderRadius: 2 }}
     >
         {/* <Typography sx={{ height: 30, fontWeight: 'bold' }}>医院列表</Typography> */}
-        <Box component="form" className="form-page" >
+        <Box component="form" className="form-page" onSubmit={handleSubmit(getData)}>
             <Stack spacing={2} direction='row' sx={{ display: 'flex', alignItems: 'center', mb: 2 }} >
                 <TextField
                     type="text"
-                    onChange={e => {
-                        setKeyword(e.target.value)
-                    }}
+                    // value={keyword}
+                    // onChange={e => setKeyword(e.target.value)}
                     name="keyword"
                     sx={{ width: 240 }}
                     {...register('keyword')}
-                    label={'姓名/手机'}
+                    label={'姓名'}
                 />
                 {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={['DateRangePicker']}>
@@ -97,7 +97,7 @@ const UserPage = () => {
                         localeText={{ start: '开始时间', end: '截止时间' }} />
                 </DemoContainer>
             </LocalizationProvider> */}
-                <Button onClick={getData} color="primary" variant='contained'>查询</Button>
+                <Button type='submit' color="primary" variant='contained'>查询</Button>
                 <Button onClick={resetHandle} color="primary">清空</Button>
             </Stack>
         </Box>

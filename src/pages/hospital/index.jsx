@@ -65,11 +65,11 @@ const Hospital = () => {
     }
 
     const columns = [
-        { field: 'hosname', headerName: '医院名称', width: 130 },
-        { field: 'hostypeString', headerName: '等级', width: 130 },
-        { field: 'fullAddress', headerName: '地址', width: 130 },
+        { field: 'hosname', headerName: '医院名称', width: 180 },
+        { field: 'hostypeString', headerName: '等级', width: 130, renderCell: ({ row }) => (<Typography>{row?.param?.hostypeString}</Typography>) },
+        { field: 'fullAddress', headerName: '地址', width: 230, renderCell: ({ row }) => (<Typography>{row?.param?.fullAddress}</Typography>) },
         {
-            field: 'status', headerName: '状态', width: 130,
+            field: 'status', headerName: '状态', width: 80,
             renderCell: (row) => (<Typography>{row.value == 0 ? '未上线' : '已上线'}</Typography>)
         },
         { field: 'createTime', headerName: '创建时间', width: 160 },

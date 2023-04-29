@@ -109,7 +109,7 @@ const HospitalSetPage = () => {
     }
 
     const columns = [
-        { field: 'index', headerName: '序号', width: 80 },
+        // { field: 'index', headerName: '序号', width: 80 },
         { field: 'hosname', headerName: '医院名称', width: 200 },
         { field: 'hoscode', headerName: '医院编号', width: 80 },
         { field: 'apiUrl', headerName: 'api基础路径', width: 130 },

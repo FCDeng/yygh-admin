@@ -82,13 +82,13 @@ const utilities = {
                 }
             ]
         },
-        {
-            id: 'doctor',
-            title: '医生列表',
-            type: 'item',
-            url: 'doctor/list',
-            icon: icons.IconWindmill,
-        },
+        // {
+        //     id: 'doctor',
+        //     title: '医生列表',
+        //     type: 'item',
+        //     url: 'doctor/list',
+        //     icon: icons.IconWindmill,
+        // },
         {
             id: 'order',
             title: '订单列表',

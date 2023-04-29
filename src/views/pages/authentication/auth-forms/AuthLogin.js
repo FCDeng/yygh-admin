@@ -21,6 +21,7 @@ import {
     useMediaQuery
 } from '@mui/material';
 
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -34,10 +35,12 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import Google from 'assets/images/icons/social-google.svg';
+import { replace } from 'lodash';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
+    const navigate = useNavigate()
     const theme = useTheme();
     const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
@@ -56,6 +59,9 @@ const FirebaseLogin = ({ ...others }) => {
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
+    const goHome = () => {
+        navigate('/', { replace: true })
+    }
 
     return (
         <>
@@ -72,6 +78,7 @@ const FirebaseLogin = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
+                        navigate('/', { replace: true })
                         if (scriptedRef.current) {
                             setStatus({ success: true });
                             setSubmitting(false);
@@ -91,7 +98,7 @@ const FirebaseLogin = ({ ...others }) => {
                         <FormControl fullWidth error={Boolean(touched.username && errors.username)} sx={{ ...theme.typography.customInput }}>
                             <InputLabel htmlFor="outlined-adornment-username-login">用户名</InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-username-login" 
+                                id="outlined-adornment-username-login"
                                 value={values.username}
                                 name="username"
                                 onBlur={handleBlur}

@@ -94,10 +94,10 @@ const DoctorOrderDetailPage = () => {
             <Stack spacing={2} direction='row' sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-around' }} >
                 <FormControlLabel required label="诊断结果: " sx={{ m: 0, width: 320 }} labelPlacement='start' control={<TextField
                     type="text"
-                    name="routine"
+                    name="diagnosis"
                     // placeholder='内科护理，儿科护理'
                     sx={{ width: 240 }}
-                    {...register('routine', { required: true })}
+                    {...register('diagnosis', { required: true })}
                 />} />
                 <FormControlLabel label="常规护理: " sx={{ m: 0, width: 320 }} labelPlacement='start' control={<TextField
                     type="text"

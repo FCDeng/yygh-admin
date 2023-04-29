@@ -24,5 +24,13 @@ export default {
       url: `${api_name}/show/${id}`,
       method: 'get'
     })
+  }, 
+  // 编辑医嘱
+  getUpdateDoctorOrder(data) {
+    return request({
+      url: `${api_name}/saveDoctorOrder`,
+      method: 'post',
+      data
+    })
   }
 }

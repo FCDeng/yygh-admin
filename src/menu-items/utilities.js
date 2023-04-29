@@ -1,12 +1,14 @@
 // assets
-import { IconTypography, IconPalette, IconShadow, IconWindmill } from '@tabler/icons';
+import { IconTypography, IconPalette, IconShadow, IconWindmill, IconAlbum, IconApple } from '@tabler/icons';
 
 // constant
 const icons = {
     IconTypography,
     IconPalette,
     IconShadow,
-    IconWindmill
+    IconWindmill, 
+    IconAlbum,
+    IconApple
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -32,20 +34,20 @@ const utilities = {
             type: 'collapse',
             breadcrumbs: false,
             children: [
-                // {
-                //     id: 'hospital-set',
-                //     title: '医院设置',
-                //     type: 'item',
-                //     url: '/hospital/set',
-                //     breadcrumbs: false
-                // },
-                // {
-                //     id: 'hospital-set-add',
-                //     title: '医院设置添加',
-                //     type: 'item',
-                //     url: '/hospital/setAdd',
-                //     breadcrumbs: false
-                // },
+                {
+                    id: 'hospital-set',
+                    title: '医院设置',
+                    type: 'item',
+                    url: '/hospital/set',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'hospital-set-add',
+                    title: '医院设置添加',
+                    type: 'item',
+                    url: '/hospital/setAdd',
+                    breadcrumbs: false
+                },
                 {
                     id: 'hospital-man',
                     title: '医院列表',
@@ -92,7 +94,23 @@ const utilities = {
             title: '订单列表',
             type: 'item',
             url: 'order/list',
-            icon: icons.IconWindmill,
+            icon: icons.IconApple,
+        },
+        {
+            id: 'doctorOrder',
+            title: '医嘱管理', 
+            type: 'collapse',
+            breadcrumbs: false, 
+            icon: icons.IconAlbum,
+            children: [
+                {
+                    id: 'doctorOrder-list',
+                    title: '医嘱列表',
+                    type: 'item',
+                    url: 'doctorOrder/list',
+                    breadcrumbs: false
+                }
+            ]
         }
     ]
 };

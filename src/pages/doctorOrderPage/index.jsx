@@ -14,11 +14,34 @@ import { TableGrid } from '@/components';
 import orderInfoApi from '@/api/order/orderInfo'
 import { useForm, Controller } from 'react-hook-form'
 
-const OrderPage = () => {
+const DoctorOrderPage = () => {
     const [hosp, setHosp] = useState('')
-    const [list, setList] = useState([])
-    const [listCache, setListCache] = useState([])
+    const [list, setList] = useState([{
+        id: 1,
+        outTradeNo: 1,
+        hosname: 1,
+        depname: 2,
+        title: 1,
+        authStatusString: 1,
+        patientName: 1,
+        number: 1,
+        amount: 1,
+        orderStatusString: 1,
+    },
+    {
+        id: 22,
+        outTradeNo: 22,
+        hosname: 22,
+        depname: 22,
+        title: 22,
+        authStatusString: 22,
+        patientName: 22,
+        number: 22,
+        amount: 22,
+        orderStatusString: 22,
+    }])
     const [statusList, setStatusList] = useState([])
+    const [listCache, setListCache] = useState([])
     const [orderStatusName, setOrderStatusName] = useState('');
     const {
         register,
@@ -42,14 +65,9 @@ const OrderPage = () => {
         getStatusList()
     }, []);
     const getData = (data) => {
-        let orderComment = ''
-        if (data?.orderStatus) {
-            orderComment = statusList.find(item => item.comment == data?.orderStatus).status
-        }
-        orderInfoApi.getPageList(1, 40, { orderStatus: orderComment }).then(
+        orderInfoApi.getPageList(1, 40, { orderStatus: 1 }).then(
             response => {
                 setList(response.data.records)
-                setListCache(response.data.records)
             }
         )
     }
@@ -59,16 +77,11 @@ const OrderPage = () => {
         })
     }
     const resetHandle = () => {
-        // setCreateTimeBegin([dayjs(), dayjs()])
-        setListCache(listCache)
         reset()
-        setOrderStatusName('')
         // getData()
+        setListCache(listCache)
     }
     const goDetail = (id) => {
-        navigate(`/order/detail?id=${id}`)
-    }
-    const goDoctorOrder = (id) => {
         navigate(`/doctorOrder/detail?id=${id}`)
     }
     const handleChange = (reserveDate) => {
@@ -78,29 +91,23 @@ const OrderPage = () => {
         setOrderStatus(e.target.value)
     }
     const onFormSubmit = (data) => {
-        let filterData = lodash.filter(list, data.filter(item => item))
-        setList(filterData)
-        // getData(data)
+        getData(data)
     }
-
 
     const columns = [
         { field: 'outTradeNo', headerName: '订单交易号', width: 180 },
         { field: 'hosname', headerName: '医院名称', width: 130 },
         { field: 'depname', headerName: '科室名称', width: 130 },
         { field: 'title', headerName: '医生职称', width: 80 },
-        { field: 'authStatusString', headerName: '安排时间', width: 130, renderCell: ({ row }) => (<Typography>{row?.reserveDate}</Typography>) },
         { field: 'patientName', headerName: '患者', width: 130 },
-        { field: 'number', headerName: '预约号序', width: 80 },
-        { field: 'amount', headerName: '服务费', width: 80 },
-        { field: 'orderStatusString', headerName: '订单状态', width: 130, renderCell: ({ row }) => (<Typography>{row?.param?.orderStatusString}</Typography>) },
-        { field: 'createTime', headerName: '创建时间', width: 200 },
+        { field: 'reserveDate', headerName: '就诊时间', width: 130 },
+        // { field: 'doctorOrder', headerName: '医嘱', width: 200 },
+        // { field: 'createTime', headerName: '创建时间', width: 200 },
         {
             field: 'actions', headerName: '操作', width: 260,
             renderCell: ({ row }) => {
                 return <Stack direction={'row'} spacing={0.4}>
-                    <Button onClick={() => goDetail(row.id)} variant="contained" >详情</Button>
-                    {row.orderStatus == 1 ? <Button onClick={() => goDoctorOrder(row.id)} variant="contained" >添加医嘱</Button> : null}
+                    <Button onClick={() => goDetail(row.id)} variant="contained" >{'编辑医嘱'}</Button>
                 </Stack>
             }
         },
@@ -133,33 +140,7 @@ const OrderPage = () => {
                     {...register('patientName')}
                     label={'患者名称'}
                 />
-                {/* </Stack>
-            <Stack spacing={2} direction='row' sx={{ display: 'flex', alignItems: 'center', mb: 2 }} > */}
-                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={['DatePicker']}>
-                        <DatePicker
-                            label="出生日期"
-                            name={'reserveDate'}
-                            // value={reserveDate}
-                            {...register("reserveDate")}
-                        // onChange={handleChange} 
-                        />
-                    </DemoContainer>
-                </LocalizationProvider> */}
-                <FormControl sx={{ width: 300 }} >
-                    <InputLabel id="orderStatus">订单状态：</InputLabel>
-                    <Select
-                        labelId="orderStatus"
-                        id="orderStatus"
-                        // value={orderStatusName}
-                        label="订单状态："
-                        onChange={handleOrderChange}
-                        name='orderStatus'
-                        {...register("orderStatus")}
-                    >
-                        {statusList.map(item => (<MenuItem key={item.comment} value={item.comment}>{item.comment}</MenuItem>))}
-                    </Select>
-                </FormControl>
+
                 <Button type='submit' color="primary" variant='contained'>查询</Button>
                 <Button onClick={resetHandle} color="primary">清空</Button>
             </Stack>
@@ -169,4 +150,5 @@ const OrderPage = () => {
     </Box>
 }
 
-export default OrderPage
+
+export default DoctorOrderPage

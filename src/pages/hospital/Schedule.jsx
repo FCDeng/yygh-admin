@@ -128,7 +128,7 @@ const Schedule = () => {
     }
 
     const columns = [
-        { field: 'title', headerName: '职称', width: 130, renderCell: ({ row }) => (<Typography>{`${row.title} | ${row.docname}`}</Typography>) },
+        { field: 'title', headerName: '职称', width: 180, renderCell: ({ row }) => (<Typography>{`${row.title} | ${row.docname}`}</Typography>) },
         { field: 'reservedNumber', headerName: '可预约数', width: 130 },
         { field: 'availableNumber', headerName: '剩余预约数', width: 130 },
         { field: 'amount', headerName: '挂号费(元)', width: 130 },
@@ -143,7 +143,7 @@ const Schedule = () => {
 
         </Stack>
         <Stack direction={'row'}>
-            <Box sx={{ width: 200, height: 500, border: 1, mr: 2 }}>
+            <Box sx={{ width: 200, height: 500, border: 1, borderColor:'#E3E8EF', mr: 2, borderRadius:2 }}>
                 <TreeList data={data} treeHandle={treeHandle} />
             </Box>
             <Stack sx={{ display: 'flex', flex: 1 }} spacing={2}>

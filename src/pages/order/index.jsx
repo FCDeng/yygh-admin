@@ -30,7 +30,7 @@ const OrderPage = () => {
         reset,
         formState: { errors },
     } = useForm({
-        defaultValues: { keyword: '' },
+        defaultValues: {orderStatus:''},
     })
     const [createTimeBegin, setCreateTimeBegin] = useState([dayjs(), dayjs()])
     const [keyword, setKeyword] = useState(null)
@@ -47,8 +47,8 @@ const OrderPage = () => {
             orderComment = statusList.find(item => item.comment == data?.orderStatus).status
         }
         orderInfoApi.getPageList(1, 40, { orderStatus: orderComment }).then(
-            response => {
-                setList(response.data.records)
+            response => { 
+                setList(response.data.records.sort((a, b) => Date.parse(b.createTime) - Date.parse(a.createTime)))
                 setListCache(response.data.records)
             }
         )
@@ -60,8 +60,9 @@ const OrderPage = () => {
     }
     const resetHandle = () => {
         // setCreateTimeBegin([dayjs(), dayjs()])
-        setListCache(listCache)
+        setList(listCache)
         reset()
+        setValue('orderStatus', '')
         setOrderStatusName('')
         // getData()
     }
@@ -77,8 +78,10 @@ const OrderPage = () => {
     const handleOrderChange = (e) => {
         setOrderStatus(e.target.value)
     }
-    const onFormSubmit = (data) => {
-        let filterData = lodash.filter(list, data.filter(item => item))
+    const onFormSubmit = (data) => { 
+        let newData = { ...data, orderStatus: data.orderStatus == '预约成功，待支付' ? 0 : 1 }
+        let filterObj = Object.fromEntries(Object.entries(newData).filter(([key, value]) => value || value === 0)) 
+        let filterData = lodash.filter(list, filterObj)
         setList(filterData)
         // getData(data)
     }

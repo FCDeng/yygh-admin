@@ -6,7 +6,7 @@ import MainLayout from 'layout/MainLayout';
 import {
     HomePage, HospitalPage, HospitalDetailPage, SchedulePage,
     UserPage, UserAuthPage, UserDetailPage,
-    OrderPage, OrderDetailPage, HospitalSetPage, HospitalSetAddPage, DoctorPage,
+    OrderPage, OrderDetailPage, HospitalSetPage, HospitalSetAddPage,
     DoctorOrderDetailPage, DoctorOrderPage
 } from '../pages'
 import AuthRouter from './AuthRouter'
@@ -34,12 +34,12 @@ const MainRoutes = {
                 { path: '/user/detail', element: <UserDetailPage /> },
             ]
         },
-        {
-            path: 'doctor', 
-            children: [
-                { path: '/doctor/list', element: <DoctorPage /> }, 
-            ]
-        },
+        // {
+        //     path: 'doctor', 
+        //     children: [
+        //         { path: '/doctor/list', element: <DoctorPage /> }, 
+        //     ]
+        // },
         {
             path: 'order',
             //  element: <OrderPage />

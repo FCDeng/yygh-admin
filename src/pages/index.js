@@ -9,14 +9,13 @@ import UserPage from './user'
 import UserAuthPage from './user/UserAuth'
 import UserDetailPage from './user/UserDetail'
 import OrderPage from './order'
-import OrderDetailPage from './order/OrderDetail'
-import DoctorPage from './doctor'
+import OrderDetailPage from './order/OrderDetail' 
 import DoctorOrderPage from './doctorOrderPage'
 import DoctorOrderDetailPage from './doctorOrderPage/DoctorOrderDetailPage'
 
 export {
     HomePage, HospitalPage, HospitalDetailPage, SchedulePage,
     UserPage, UserAuthPage, UserDetailPage,
-    OrderPage, OrderDetailPage, HospitalSetPage, HospitalSetAddPage, DoctorPage,
+    OrderPage, OrderDetailPage, HospitalSetPage, HospitalSetAddPage,
     DoctorOrderPage, DoctorOrderDetailPage
 }

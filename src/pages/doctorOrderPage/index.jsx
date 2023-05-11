@@ -67,7 +67,7 @@ const DoctorOrderPage = () => {
     const getData = (data) => {
         orderInfoApi.getPageList(1, 40, { orderStatus: 1 }).then(
             response => {
-                setList(response.data.records)
+                setList(response.data.records.sort((a, b) => Date.parse(b.createTime) - Date.parse(a.createTime)))
             }
         )
     }

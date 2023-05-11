@@ -144,7 +144,6 @@ const DoctorOrderDetailPage = () => {
                 />} />
             </Stack>
             <Stack spacing={2} direction='row' sx={{ display: 'flex', alignItems: 'center', mb: 2 }} >
-
                 <FormControlLabel label="药物: " sx={{ m: 0, width: 320 }} labelPlacement='start' control={<TextField
                     type="text"
                     name="drug"
